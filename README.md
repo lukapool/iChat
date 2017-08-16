@@ -1,2 +1,2 @@
 # iChat
-iChat Demo App
+A Demo Chat App Uses ![Firebase](https://console.firebase.google.com/)'s API

@@ -8,20 +8,36 @@
 
 /* Begin PBXBuildFile section */
 		A11DF1471F4476ED00336382 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11DF1461F4476ED00336382 /* AppDelegate.swift */; };
-		A11DF1491F4476ED00336382 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11DF1481F4476ED00336382 /* ViewController.swift */; };
 		A11DF14C1F4476ED00336382 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A11DF14A1F4476ED00336382 /* Main.storyboard */; };
 		A11DF14E1F4476ED00336382 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A11DF14D1F4476ED00336382 /* Assets.xcassets */; };
 		A11DF1511F4476ED00336382 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A11DF14F1F4476ED00336382 /* LaunchScreen.storyboard */; };
+		A11DF1591F447A6500336382 /* LogInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11DF1581F447A6500336382 /* LogInViewController.swift */; };
+		A11DF15B1F447A7700336382 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11DF15A1F447A7700336382 /* ChatViewController.swift */; };
+		A11DF1641F447D2E00336382 /* backgroundPhoto.png in Resources */ = {isa = PBXBuildFile; fileRef = A11DF15D1F447D2E00336382 /* backgroundPhoto.png */; };
+		A11DF1651F447D2E00336382 /* googleButton.png in Resources */ = {isa = PBXBuildFile; fileRef = A11DF15E1F447D2E00336382 /* googleButton.png */; };
+		A11DF1661F447D2E00336382 /* logout.png in Resources */ = {isa = PBXBuildFile; fileRef = A11DF15F1F447D2E00336382 /* logout.png */; };
+		A11DF1671F447D2E00336382 /* logout@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A11DF1601F447D2E00336382 /* logout@2x.png */; };
+		A11DF1681F447D2E00336382 /* logout@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = A11DF1611F447D2E00336382 /* logout@3x.png */; };
+		A11DF1691F447D2E00336382 /* OrLine.png in Resources */ = {isa = PBXBuildFile; fileRef = A11DF1621F447D2E00336382 /* OrLine.png */; };
+		A11DF16A1F447D2E00336382 /* profileImage.png in Resources */ = {isa = PBXBuildFile; fileRef = A11DF1631F447D2E00336382 /* profileImage.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		A11DF1431F4476ED00336382 /* iChat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iChat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A11DF1461F4476ED00336382 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		A11DF1481F4476ED00336382 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		A11DF14B1F4476ED00336382 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		A11DF14D1F4476ED00336382 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A11DF1501F4476ED00336382 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A11DF1521F4476ED00336382 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A11DF1581F447A6500336382 /* LogInViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogInViewController.swift; sourceTree = "<group>"; };
+		A11DF15A1F447A7700336382 /* ChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
+		A11DF15D1F447D2E00336382 /* backgroundPhoto.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = backgroundPhoto.png; sourceTree = "<group>"; };
+		A11DF15E1F447D2E00336382 /* googleButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = googleButton.png; sourceTree = "<group>"; };
+		A11DF15F1F447D2E00336382 /* logout.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logout.png; sourceTree = "<group>"; };
+		A11DF1601F447D2E00336382 /* logout@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logout@2x.png"; sourceTree = "<group>"; };
+		A11DF1611F447D2E00336382 /* logout@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logout@3x.png"; sourceTree = "<group>"; };
+		A11DF1621F447D2E00336382 /* OrLine.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = OrLine.png; sourceTree = "<group>"; };
+		A11DF1631F447D2E00336382 /* profileImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = profileImage.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -39,6 +55,7 @@
 			isa = PBXGroup;
 			children = (
 				A11DF1451F4476ED00336382 /* iChat */,
+				A11DF15C1F447D2E00336382 /* Resources */,
 				A11DF1441F4476ED00336382 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -55,13 +72,29 @@
 			isa = PBXGroup;
 			children = (
 				A11DF1461F4476ED00336382 /* AppDelegate.swift */,
-				A11DF1481F4476ED00336382 /* ViewController.swift */,
 				A11DF14A1F4476ED00336382 /* Main.storyboard */,
 				A11DF14D1F4476ED00336382 /* Assets.xcassets */,
 				A11DF14F1F4476ED00336382 /* LaunchScreen.storyboard */,
 				A11DF1521F4476ED00336382 /* Info.plist */,
+				A11DF1581F447A6500336382 /* LogInViewController.swift */,
+				A11DF15A1F447A7700336382 /* ChatViewController.swift */,
 			);
 			path = iChat;
+			sourceTree = "<group>";
+		};
+		A11DF15C1F447D2E00336382 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				A11DF15D1F447D2E00336382 /* backgroundPhoto.png */,
+				A11DF15E1F447D2E00336382 /* googleButton.png */,
+				A11DF15F1F447D2E00336382 /* logout.png */,
+				A11DF1601F447D2E00336382 /* logout@2x.png */,
+				A11DF1611F447D2E00336382 /* logout@3x.png */,
+				A11DF1621F447D2E00336382 /* OrLine.png */,
+				A11DF1631F447D2E00336382 /* profileImage.png */,
+			);
+			name = Resources;
+			path = iChat/Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -124,9 +157,16 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A11DF1641F447D2E00336382 /* backgroundPhoto.png in Resources */,
+				A11DF1671F447D2E00336382 /* logout@2x.png in Resources */,
 				A11DF1511F4476ED00336382 /* LaunchScreen.storyboard in Resources */,
+				A11DF16A1F447D2E00336382 /* profileImage.png in Resources */,
 				A11DF14E1F4476ED00336382 /* Assets.xcassets in Resources */,
 				A11DF14C1F4476ED00336382 /* Main.storyboard in Resources */,
+				A11DF1681F447D2E00336382 /* logout@3x.png in Resources */,
+				A11DF1651F447D2E00336382 /* googleButton.png in Resources */,
+				A11DF1661F447D2E00336382 /* logout.png in Resources */,
+				A11DF1691F447D2E00336382 /* OrLine.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -137,7 +177,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A11DF1491F4476ED00336382 /* ViewController.swift in Sources */,
+				A11DF1591F447A6500336382 /* LogInViewController.swift in Sources */,
+				A11DF15B1F447A7700336382 /* ChatViewController.swift in Sources */,
 				A11DF1471F4476ED00336382 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

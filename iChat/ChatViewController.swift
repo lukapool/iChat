@@ -7,13 +7,36 @@
 //
 
 import UIKit
+import JSQMessagesViewController
+import MobileCoreServices
+import AVKit
+import FirebaseDatabase
 
-class ChatViewController: UIViewController {
-
+class ChatViewController: JSQMessagesViewController {
+    
+    var messages = [JSQMessage]()
+    var messagesRef = FIRDatabase.database().reference().child("messages")
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         // Do any additional setup after loading the view.
+        // fake data
+        senderId = "1"
+        senderDisplayName = "luka"
+        observeMessages()
+//        let rootRef = FIRDatabase.database().reference()
+//        let messageRef = rootRef.child("messages")
+//        
+//        print(rootRef)
+//        print(messageRef)
+//        
+//        messageRef.observe(FIRDataEventType.childAdded) { (snapshoot: FIRDataSnapshot) in
+//            print(snapshoot)
+//            if let data = snapshoot.value as? String {
+//                print(data)
+//            }
+//        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -21,11 +44,124 @@ class ChatViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    func observeMessages() {
+        messagesRef.observe(FIRDataEventType.childAdded) { (snapshot: FIRDataSnapshot) in
+            print(snapshot.value)
+            if let dataDic = snapshot.value as? [String: AnyObject] {
+                if let mediaType = dataDic["MediaType"] as? String,
+                    let senderId = dataDic["senderId"] as? String,
+                    let senderName = dataDic["senderName"] as? String {
+                    
+                        if mediaType == "TEXT" {
+                            if let text = dataDic["text"] as? String {
+                                self.messages.append(JSQMessage(senderId: senderId, displayName: senderName, text: text))
+                                self.collectionView.reloadData()
+                            }
+                        }
+                    
+                }
+            }
 
+        }
+    
+    
+    }
+    
+    override func didPressSend(_ button: UIButton!, withMessageText text: String!, senderId: String!, senderDisplayName: String!, date: Date!) {
+//        print("send something \(text) from user \(senderDisplayName)")
+//        messages.append(JSQMessage(senderId: senderId, displayName: senderDisplayName, text: text))
+//        collectionView.reloadData()
+        let message = messagesRef.childByAutoId()
+        let messageData = ["text": text, "senderId": senderId, "senderName": senderDisplayName, "MediaType": "TEXT"]
+        message.setValue(messageData)
+    }
+    
+    override func didPressAccessoryButton(_ sender: UIButton!) {
+        print("didPressAccessoryButton")
+        let sheet = UIAlertController(title: "Media Messages", message: "Please select a media", preferredStyle: UIAlertControllerStyle.actionSheet)
+        let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel) { (cancelAction: UIAlertAction) in
+            
+        }
+        let photoLibraryAction = UIAlertAction(title: "Photo Library", style: UIAlertActionStyle.default) { (cancelAction: UIAlertAction) in
+            self.getMediaFrom(type: kUTTypeImage)
+        }
+        let videoLibraryAction = UIAlertAction(title: "Video Library", style: UIAlertActionStyle.default) { (cancelAction: UIAlertAction) in
+            self.getMediaFrom(type: kUTTypeMovie)
+        }
+        sheet.addAction(photoLibraryAction)
+        sheet.addAction(videoLibraryAction)
+        sheet.addAction(cancelAction)
+        present(sheet, animated: true, completion: nil)
+
+    }
+    
+    // get image or video 
+    private func getMediaFrom(type: CFString) {
+        let imagePickerController = UIImagePickerController()
+        imagePickerController.delegate = self
+        imagePickerController.mediaTypes = [type as String]
+        present(imagePickerController, animated: true, completion: nil)
+    }
+    // collection item count
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return messages.count
+    }
+    // cell for index item
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = super .collectionView(collectionView, cellForItemAt: indexPath) as! JSQMessagesCollectionViewCell
+        return cell
+    }
+    // get the data display for the index cell
+    override func collectionView(_ collectionView: JSQMessagesCollectionView!, messageDataForItemAt indexPath: IndexPath!) -> JSQMessageData! {
+        return messages[indexPath.item]
+    }
+    // get the bubble image for the index cell
+    override func collectionView(_ collectionView: JSQMessagesCollectionView!, messageBubbleImageDataForItemAt indexPath: IndexPath!) -> JSQMessageBubbleImageDataSource! {
+        let bubbleFactory = JSQMessagesBubbleImageFactory()
+        
+        return bubbleFactory?.outgoingMessagesBubbleImage(with: UIColor.black)
+    }
+    // get the avatar image data
+    override func collectionView(_ collectionView: JSQMessagesCollectionView!, avatarImageDataForItemAt indexPath: IndexPath!) -> JSQMessageAvatarImageDataSource! {
+        return nil
+    }
+    
+    override func collectionView(_ collectionView: JSQMessagesCollectionView!, didTapMessageBubbleAt indexPath: IndexPath!) {
+        print("index path : \(indexPath.item)")
+        let message = messages[indexPath.item]
+        if message.isMediaMessage {
+            if let mediaItem = message.media as? JSQVideoMediaItem {
+                let player = AVPlayer(url: mediaItem.fileURL)
+                let playerViewController = AVPlayerViewController()
+                playerViewController.player = player
+                present(playerViewController, animated: true, completion: nil)
+            }
+        }
+    }
+    
     @IBAction func logoutDidTapped(_ sender: UIBarButtonItem) {
         let loginVC = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as! LogInViewController
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         appDelegate.window?.rootViewController = loginVC
     }
 
+}
+
+extension ChatViewController: UIImagePickerControllerDelegate {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        print(info)
+        if let picture = info[UIImagePickerControllerOriginalImage] as? UIImage {
+            let photo = JSQPhotoMediaItem(image: picture)
+            messages.append(JSQMessage(senderId: senderId, displayName: senderDisplayName, media: photo))
+        } else if let video = info[UIImagePickerControllerMediaURL] as? URL {
+            let videoItem = JSQVideoMediaItem(fileURL: video, isReadyToPlay: true)
+            messages.append(JSQMessage(senderId: senderId, displayName: senderDisplayName, media: videoItem))
+        }
+        picker.dismiss(animated: true, completion: nil)
+        collectionView.reloadData()
+    }
+}
+
+extension ChatViewController: UINavigationControllerDelegate {
+    
 }

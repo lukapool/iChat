@@ -18,13 +18,16 @@ class ChatViewController: JSQMessagesViewController {
     
     var messages = [JSQMessage]()
     var messagesRef = FIRDatabase.database().reference().child("messages")
-    
+    let incomingBubbleImage = JSQMessagesBubbleImageFactory().incomingMessagesBubbleImage(with: UIColor.gray)
+    let outgoingBubbleImage = JSQMessagesBubbleImageFactory().outgoingMessagesBubbleImage(with: UIColor.blue)
     override func viewDidLoad() {
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
-        // fake data
-        senderId = "1"
+        let user = FIRAuth.auth()?.currentUser
+        
+        
+        senderId = user?.uid
         senderDisplayName = "luka"
         observeMessages()
 //        let rootRef = FIRDatabase.database().reference()
@@ -48,7 +51,7 @@ class ChatViewController: JSQMessagesViewController {
     
     func observeMessages() {
         messagesRef.observe(FIRDataEventType.childAdded) { (snapshot: FIRDataSnapshot) in
-//            print(snapshot.value)
+            print(snapshot.value)
             if let dataDic = snapshot.value as? [String: AnyObject] {
                 if let mediaType = dataDic["MediaType"] as? String,
                     let senderId = dataDic["senderId"] as? String,
@@ -66,6 +69,7 @@ class ChatViewController: JSQMessagesViewController {
                             if let imageData = try? Data(contentsOf: url) {
                                 let image = UIImage(data: imageData)
                                 let media = JSQPhotoMediaItem(image: image)
+                                media?.appliesMediaViewMaskAsOutgoing = senderId == self.senderId
                                 self.messages.append(JSQMessage(senderId: senderId, displayName: senderName, media: media))
                                 self.collectionView.reloadData()
                             }
@@ -74,12 +78,15 @@ class ChatViewController: JSQMessagesViewController {
                         if let sourcePathURL = dataDic["fileURL"] as? String {
                             let videoURL = URL(string: sourcePathURL)
                             let media = JSQVideoMediaItem(fileURL: videoURL, isReadyToPlay: true)
+                            media?.appliesMediaViewMaskAsOutgoing = senderId == self.senderId
                             self.messages.append(JSQMessage(senderId: senderId, displayName: senderName, media: media))
                             self.collectionView.reloadData()
                         }
                     default:
                         break
                     }
+                    
+                    self.finishReceivingMessage(animated: true)
                 }
             }
 
@@ -95,6 +102,7 @@ class ChatViewController: JSQMessagesViewController {
         let message = messagesRef.childByAutoId()
         let messageData = ["text": text, "senderId": senderId, "senderName": senderDisplayName, "MediaType": "TEXT"]
         message.setValue(messageData)
+        finishSendingMessage(animated: true)
     }
     
     override func didPressAccessoryButton(_ sender: UIButton!) {
@@ -138,9 +146,8 @@ class ChatViewController: JSQMessagesViewController {
     }
     // get the bubble image for the index cell
     override func collectionView(_ collectionView: JSQMessagesCollectionView!, messageBubbleImageDataForItemAt indexPath: IndexPath!) -> JSQMessageBubbleImageDataSource! {
-        let bubbleFactory = JSQMessagesBubbleImageFactory()
-        
-        return bubbleFactory?.outgoingMessagesBubbleImage(with: UIColor.black)
+        let message = messages[indexPath.item]
+        return message.senderId == senderId ? outgoingBubbleImage : incomingBubbleImage
     }
     // get the avatar image data
     override func collectionView(_ collectionView: JSQMessagesCollectionView!, avatarImageDataForItemAt indexPath: IndexPath!) -> JSQMessageAvatarImageDataSource! {
@@ -220,12 +227,12 @@ extension ChatViewController: UIImagePickerControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         print(info)
         if let picture = info[UIImagePickerControllerOriginalImage] as? UIImage {
-            let photo = JSQPhotoMediaItem(image: picture)
-            messages.append(JSQMessage(senderId: senderId, displayName: senderDisplayName, media: photo))
+//            let photo = JSQPhotoMediaItem(image: picture)
+//            messages.append(JSQMessage(senderId: senderId, displayName: senderDisplayName, media: photo))
             sendMeida(image: picture, video: nil)
         } else if let video = info[UIImagePickerControllerMediaURL] as? URL {
-            let videoItem = JSQVideoMediaItem(fileURL: video, isReadyToPlay: true)
-            messages.append(JSQMessage(senderId: senderId, displayName: senderDisplayName, media: videoItem))
+//            let videoItem = JSQVideoMediaItem(fileURL: video, isReadyToPlay: true)
+//            messages.append(JSQMessage(senderId: senderId, displayName: senderDisplayName, media: videoItem))
             sendMeida(image: nil, video: video)
         }
         picker.dismiss(animated: true, completion: nil)

@@ -11,6 +11,8 @@ import JSQMessagesViewController
 import MobileCoreServices
 import AVKit
 import FirebaseDatabase
+import FirebaseStorage
+import FirebaseAuth
 
 class ChatViewController: JSQMessagesViewController {
     
@@ -46,7 +48,7 @@ class ChatViewController: JSQMessagesViewController {
     
     func observeMessages() {
         messagesRef.observe(FIRDataEventType.childAdded) { (snapshot: FIRDataSnapshot) in
-            print(snapshot.value)
+//            print(snapshot.value)
             if let dataDic = snapshot.value as? [String: AnyObject] {
                 if let mediaType = dataDic["MediaType"] as? String,
                     let senderId = dataDic["senderId"] as? String,
@@ -144,7 +146,51 @@ class ChatViewController: JSQMessagesViewController {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         appDelegate.window?.rootViewController = loginVC
     }
-
+    
+    func sendMeida(image: UIImage?, video: URL?) {
+        print(FIRStorage.storage().reference())
+        let filePath = "\(FIRAuth.auth()!.currentUser!.uid)/\(NSDate.timeIntervalSinceReferenceDate)"
+        print(filePath)
+        if let image = image {
+            let imageData = UIImageJPEGRepresentation(image, 0.1)!
+            let metadata = FIRStorageMetadata()
+            metadata.contentType = "image/jpg"
+            FIRStorage.storage().reference().child(filePath).put(imageData, metadata: metadata, completion: { (metaData, error) in
+                if let error = error {
+                    print(error.localizedDescription)
+                    return
+                } else if let metaData = metaData {
+                    let downloadStringPath = metaData.downloadURLs![0].absoluteString
+                    print(downloadStringPath)
+                    let newMessageRef = self.messagesRef.childByAutoId()
+                    let newMessageData = ["fileURL": downloadStringPath, "senderId": self.senderId, "senderName": self.senderDisplayName, "MediaType": "PHOTO"]
+                    newMessageRef.setValue(newMessageData)
+                }
+            })
+        } else if let video = video {
+            do {
+                let videoData = try Data(contentsOf: video)
+                let metadata = FIRStorageMetadata()
+                metadata.contentType = "video/mp4"
+                FIRStorage.storage().reference().child(filePath).put(videoData, metadata: metadata, completion: { (metaData, error) in
+                    if let error = error {
+                        print(error.localizedDescription)
+                        return
+                    } else if let metaData = metaData {
+                        let downloadStringPath = metaData.downloadURLs![0].absoluteString
+                        print(downloadStringPath)
+                        let newMessageRef = self.messagesRef.childByAutoId()
+                        let newMessageData = ["fileURL": downloadStringPath, "senderId": self.senderId, "senderName": self.senderDisplayName, "MediaType": "VIDEO"]
+                        newMessageRef.setValue(newMessageData)
+                    }
+                })
+            } catch {
+                print(error)
+            }
+        }
+        
+        
+    }
 }
 
 extension ChatViewController: UIImagePickerControllerDelegate {
@@ -153,9 +199,11 @@ extension ChatViewController: UIImagePickerControllerDelegate {
         if let picture = info[UIImagePickerControllerOriginalImage] as? UIImage {
             let photo = JSQPhotoMediaItem(image: picture)
             messages.append(JSQMessage(senderId: senderId, displayName: senderDisplayName, media: photo))
+            sendMeida(image: picture, video: nil)
         } else if let video = info[UIImagePickerControllerMediaURL] as? URL {
             let videoItem = JSQVideoMediaItem(fileURL: video, isReadyToPlay: true)
             messages.append(JSQMessage(senderId: senderId, displayName: senderDisplayName, media: videoItem))
+            sendMeida(image: nil, video: video)
         }
         picker.dismiss(animated: true, completion: nil)
         collectionView.reloadData()

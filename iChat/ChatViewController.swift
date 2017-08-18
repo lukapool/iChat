@@ -161,9 +161,13 @@ class ChatViewController: JSQMessagesViewController {
     }
     
     @IBAction func logoutDidTapped(_ sender: UIBarButtonItem) {
-        let loginVC = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as! LogInViewController
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        appDelegate.window?.rootViewController = loginVC
+        
+        do {
+            try FIRAuth.auth()?.signOut()
+            Helper.helper.logoutToLoginVC()
+        } catch {
+            print(error)
+        }
     }
     
     func sendMeida(image: UIImage?, video: URL?) {

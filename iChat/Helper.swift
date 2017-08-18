@@ -36,10 +36,16 @@ class Helper {
         })
     }
     
-    private func switchToNavigationVC() {
+    func switchToNavigationVC() {
         let chatVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ChatViewController") as! UINavigationController
         let applicationDelegate = UIApplication.shared.delegate as! AppDelegate
         applicationDelegate.window?.rootViewController = chatVC
+    }
+    
+    func logoutToLoginVC() {
+        let loginVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "LoginVC") as! LogInViewController
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        appDelegate.window?.rootViewController = loginVC
     }
     
 }

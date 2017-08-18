@@ -8,7 +8,7 @@
 
 import UIKit
 import GoogleSignIn
-
+import FirebaseAuth
 class LogInViewController: UIViewController, GIDSignInUIDelegate {
     @IBOutlet weak var anonymousButton: UIButton!
 
@@ -23,7 +23,19 @@ class LogInViewController: UIViewController, GIDSignInUIDelegate {
         GIDSignIn.sharedInstance().uiDelegate = self
         GIDSignIn.sharedInstance().delegate = self
     }
-
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        FIRAuth.auth()?.addStateDidChangeListener({ (auth: FIRAuth, user: FIRUser?) in
+            if let user = user {
+                print(user)
+                Helper.helper.switchToNavigationVC()
+            } else {
+                print("unknown")
+            }
+        })
+    }
+    
     @IBAction func loginAnonymouslyDidTapped(_ sender: UIButton) {
         print("login anonymously did tapped")
         Helper.helper.loginAnonymously()
@@ -33,7 +45,6 @@ class LogInViewController: UIViewController, GIDSignInUIDelegate {
         print("google login did tapped")
         // 发起 Google 第三方登录
         GIDSignIn.sharedInstance().signIn()
-
     }
 }
 

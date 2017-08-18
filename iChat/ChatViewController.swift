@@ -54,13 +54,32 @@ class ChatViewController: JSQMessagesViewController {
                     let senderId = dataDic["senderId"] as? String,
                     let senderName = dataDic["senderName"] as? String {
                     
-                        if mediaType == "TEXT" {
-                            if let text = dataDic["text"] as? String {
-                                self.messages.append(JSQMessage(senderId: senderId, displayName: senderName, text: text))
+                    switch mediaType {
+                    case "TEXT":
+                        if let text = dataDic["text"] as? String {
+                            self.messages.append(JSQMessage(senderId: senderId, displayName: senderName, text: text))
+                            self.collectionView.reloadData()
+                        }
+                    case "PHOTO":
+                        if let sourcePathURL = dataDic["fileURL"] as? String {
+                            let url = URL(string: sourcePathURL)!
+                            if let imageData = try? Data(contentsOf: url) {
+                                let image = UIImage(data: imageData)
+                                let media = JSQPhotoMediaItem(image: image)
+                                self.messages.append(JSQMessage(senderId: senderId, displayName: senderName, media: media))
                                 self.collectionView.reloadData()
                             }
                         }
-                    
+                    case "VIDEO":
+                        if let sourcePathURL = dataDic["fileURL"] as? String {
+                            let videoURL = URL(string: sourcePathURL)
+                            let media = JSQVideoMediaItem(fileURL: videoURL, isReadyToPlay: true)
+                            self.messages.append(JSQMessage(senderId: senderId, displayName: senderName, media: media))
+                            self.collectionView.reloadData()
+                        }
+                    default:
+                        break
+                    }
                 }
             }
 

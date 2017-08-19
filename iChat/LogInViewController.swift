@@ -11,7 +11,8 @@ import GoogleSignIn
 import FirebaseAuth
 class LogInViewController: UIViewController, GIDSignInUIDelegate {
     @IBOutlet weak var anonymousButton: UIButton!
-
+//    var stateDidChangeListener: FIRAuthStateDidChangeListenerHandle?
+//    var isGoingToChat: Bool = true
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -26,14 +27,20 @@ class LogInViewController: UIViewController, GIDSignInUIDelegate {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        FIRAuth.auth()?.addStateDidChangeListener({ (auth: FIRAuth, user: FIRUser?) in
-            if let user = user {
-                print(user)
-                Helper.helper.switchToNavigationVC()
-            } else {
-                print("unknown")
-            }
-        })
+        if FIRAuth.auth()?.currentUser != nil {
+            Helper.helper.switchToNavigationVC()
+        }
+//       stateDidChangeListener =  FIRAuth.auth()?.addStateDidChangeListener({ (auth: FIRAuth, user: FIRUser?) in
+//            if let user = user {
+//                print(user)
+//                if self.isGoingToChat {
+//                    self.isGoingToChat = false
+//                    Helper.helper.switchToNavigationVC()
+//                }
+//            } else {
+//                print("unknown")
+//            }
+//        })
     }
     
     @IBAction func loginAnonymouslyDidTapped(_ sender: UIButton) {
@@ -46,6 +53,13 @@ class LogInViewController: UIViewController, GIDSignInUIDelegate {
         // 发起 Google 第三方登录
         GIDSignIn.sharedInstance().signIn()
     }
+    
+    deinit {
+        print("Login View Controller dealloc")
+//        if let stateDidChangeListener = stateDidChangeListener {
+//            FIRAuth.auth()?.removeStateDidChangeListener(stateDidChangeListener)
+//        }
+    }
 }
 
 //第三方登录的结果处理回调
@@ -56,6 +70,7 @@ extension LogInViewController: GIDSignInDelegate {
             return
         }
         print(user.authentication)
+        
         // 成功的到 Google 第三方登录的 access token
         Helper.helper.loginWithGoogle(authentication: user.authentication)
     }

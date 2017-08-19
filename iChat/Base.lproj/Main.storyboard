@@ -108,7 +108,7 @@
         <!--Navigation Controller-->
         <scene sceneID="WlH-rd-v7f">
             <objects>
-                <navigationController storyboardIdentifier="ChatViewController" automaticallyAdjustsScrollViewInsets="NO" id="DvI-JU-46r" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="NaviVC" automaticallyAdjustsScrollViewInsets="NO" id="DvI-JU-46r" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="XIq-dR-FjU">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>

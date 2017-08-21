@@ -18,19 +18,28 @@ import SDWebImage
 class ChatViewController: JSQMessagesViewController {
     
     var messages = [JSQMessage]()
-    var messagesRef = FIRDatabase.database().reference().child("messages")
+    var messagesRef = FIRDatabase.database().reference().child("channels")
     var usersRef = FIRDatabase.database().reference().child("users")
-    var avatarDict = [String: JSQMessagesAvatarImage]()
+    var messagesRefHandle: FIRDatabaseHandle?
+    var usersRefHandle: FIRDatabaseHandle?
     
-    let incomingBubbleImage = JSQMessagesBubbleImageFactory().incomingMessagesBubbleImage(with: UIColor.gray)
-    let outgoingBubbleImage = JSQMessagesBubbleImageFactory().outgoingMessagesBubbleImage(with: UIColor.blue)
+    var avatarDict = [String: JSQMessagesAvatarImage]()
+    var channel: Channel?
+    
+    let incomingBubbleImage = JSQMessagesBubbleImageFactory().incomingMessagesBubbleImage(with: UIColor.jsq_messageBubbleLightGray())
+    let outgoingBubbleImage = JSQMessagesBubbleImageFactory().outgoingMessagesBubbleImage(with: UIColor.jsq_messageBubbleBlue())
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationController?.navigationBar.tintColor = UIColor.white
+        
+        if let channel = channel {
+            title = channel.name
+            messagesRef = messagesRef.child("\(channel.id)/messages")
+        }
         
         // Do any additional setup after loading the view.
         let user = FIRAuth.auth()?.currentUser
-        
         
         senderId = user?.uid
         if let displayName = user?.displayName {
@@ -42,13 +51,10 @@ class ChatViewController: JSQMessagesViewController {
         observeMessages()
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
+
     
     func observerUser(uid: String) {
-        usersRef.child(uid).observe(FIRDataEventType.value) { (snapshoot: FIRDataSnapshot) in
+        usersRefHandle = usersRef.child(uid).observe(FIRDataEventType.value) { [unowned self] (snapshoot: FIRDataSnapshot) in
             print(snapshoot.value)
             if let dataDict = snapshoot.value as? [String: AnyObject],
                 let url = dataDict["profileUrl"] as? String {
@@ -70,19 +76,12 @@ class ChatViewController: JSQMessagesViewController {
                     self.collectionView.reloadData()
                 }
             })
-//            do {
-//                let urlString = URL(string: urlString)
-//                let data = try Data(contentsOf: urlString!)
-//                let image = UIImage(data: data)
-//                avatarDict[uid] = JSQMessagesAvatarImageFactory.avatarImage(with: image, diameter: 30)
-//            } catch {
-//                print(error)
-//            }
+
         }
     }
     
     func observeMessages() {
-        messagesRef.observe(FIRDataEventType.childAdded) { (snapshot: FIRDataSnapshot) in
+        messagesRefHandle = messagesRef.observe(FIRDataEventType.childAdded) { [unowned self] (snapshot: FIRDataSnapshot) in
             print(snapshot.value)
             if let dataDic = snapshot.value as? [String: AnyObject] {
                 if let mediaType = dataDic["MediaType"] as? String,
@@ -177,6 +176,13 @@ class ChatViewController: JSQMessagesViewController {
     // cell for index item
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = super .collectionView(collectionView, cellForItemAt: indexPath) as! JSQMessagesCollectionViewCell
+        
+        let message = messages[indexPath.item]
+        if message.senderId == senderId {
+            cell.textView?.textColor = UIColor.white
+        } else {
+            cell.textView?.textColor = UIColor.black
+        }
         return cell
     }
     // get the data display for the index cell
@@ -239,15 +245,7 @@ class ChatViewController: JSQMessagesViewController {
         }
     }
     
-    @IBAction func logoutDidTapped(_ sender: UIBarButtonItem) {
-        
-        do {
-            try FIRAuth.auth()?.signOut()
-            Helper.helper.logoutToLoginVC()
-        } catch {
-            print(error)
-        }
-    }
+
     
     func sendMeida(image: UIImage?, video: URL?) {
         print(FIRStorage.storage().reference())
@@ -294,8 +292,12 @@ class ChatViewController: JSQMessagesViewController {
     
     deinit {
         print("Chat View Controller dealloc")
-        usersRef.removeAllObservers()
-        messagesRef.removeAllObservers()
+        if let usersRefHandle = usersRefHandle {
+            usersRef.removeObserver(withHandle: usersRefHandle)
+        }
+        if let messagesRefHandle = messagesRefHandle {
+            messagesRef.removeObserver(withHandle: messagesRefHandle)
+        }
     }
     
 }

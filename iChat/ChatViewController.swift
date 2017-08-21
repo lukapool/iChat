@@ -13,6 +13,7 @@ import AVKit
 import FirebaseDatabase
 import FirebaseStorage
 import FirebaseAuth
+import SDWebImage
 
 class ChatViewController: JSQMessagesViewController {
     
@@ -59,17 +60,25 @@ class ChatViewController: JSQMessagesViewController {
     func setupAvatar(urlString: String, uid: String) {
         if urlString == "" {
             avatarDict[uid] = JSQMessagesAvatarImageFactory.avatarImage(with: #imageLiteral(resourceName: "profileImage.png"), diameter: 30)
+            collectionView.reloadData()
         } else {
-            do {
-                let urlString = URL(string: urlString)
-                let data = try Data(contentsOf: urlString!)
-                let image = UIImage(data: data)
-                avatarDict[uid] = JSQMessagesAvatarImageFactory.avatarImage(with: image, diameter: 30)
-            } catch {
-                print(error)
-            }
+            SDWebImageManager.shared().loadImage(with: URL(string: urlString), options: [], progress: nil, completed: { (image: UIImage?, data: Data?, error: Error?, cacheType: SDImageCacheType, success: Bool, url: URL?) in
+                if image != nil {
+//                    print(Thread.current) 
+//                    main thread
+                    self.avatarDict[uid] = JSQMessagesAvatarImageFactory.avatarImage(with: image, diameter: 30)
+                    self.collectionView.reloadData()
+                }
+            })
+//            do {
+//                let urlString = URL(string: urlString)
+//                let data = try Data(contentsOf: urlString!)
+//                let image = UIImage(data: data)
+//                avatarDict[uid] = JSQMessagesAvatarImageFactory.avatarImage(with: image, diameter: 30)
+//            } catch {
+//                print(error)
+//            }
         }
-        collectionView.reloadData()
     }
     
     func observeMessages() {
@@ -91,13 +100,18 @@ class ChatViewController: JSQMessagesViewController {
                     case "PHOTO":
                         if let sourcePathURL = dataDic["fileURL"] as? String {
                             let url = URL(string: sourcePathURL)!
-                            if let imageData = try? Data(contentsOf: url) {
-                                let image = UIImage(data: imageData)
-                                let media = JSQPhotoMediaItem(image: image)
-                                media?.appliesMediaViewMaskAsOutgoing = senderId == self.senderId
-                                self.messages.append(JSQMessage(senderId: senderId, displayName: senderName, media: media))
-                                self.collectionView.reloadData()
-                            }
+                            let media = JSQPhotoMediaItem(image: nil)
+                            media?.appliesMediaViewMaskAsOutgoing = senderId == self.senderId
+                            self.messages.append(JSQMessage(senderId: senderId, displayName: senderName, media: media))
+                            self.collectionView.reloadData()
+                            
+                            SDWebImageManager.shared().loadImage(with: url, options: [], progress: nil, completed: { (image, _, _, _, _, _) in
+                                if image != nil {
+                                    media?.image = image
+                                    self.collectionView.reloadData()
+                                }
+                            })
+                            
                         }
                     case "VIDEO":
                         if let sourcePathURL = dataDic["fileURL"] as? String {

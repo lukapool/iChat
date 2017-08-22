@@ -58,9 +58,10 @@ class ChannelListViewController: UITableViewController {
     @IBAction func createNewChannel(_ sender: UIButton) {
         if let channelName = newChannelTextFiled?.text {
             let newLineAndWhiteSpaces = CharacterSet.whitespacesAndNewlines
-            if channelName.trimmingCharacters(in: newLineAndWhiteSpaces) != "" {
-                print("new channel name is \(channelName)")
-                channelsRef.childByAutoId().setValue(["name": channelName])
+            let trimmedChannelName = channelName.trimmingCharacters(in: newLineAndWhiteSpaces)
+            if trimmedChannelName != "" {
+                print("new channel name is \(trimmedChannelName)")
+                channelsRef.childByAutoId().setValue(["name": trimmedChannelName])
             }
             newChannelTextFiled?.text = ""
         }

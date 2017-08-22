@@ -44,6 +44,8 @@ class ChatViewController: JSQMessagesViewController {
         senderId = user?.uid
         if let displayName = user?.displayName {
             senderDisplayName = displayName
+        } else if let name = Helper.helper.getUserName() {
+            senderDisplayName = name
         } else {
             senderDisplayName = "Anonymous"
         }

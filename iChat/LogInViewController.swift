@@ -9,8 +9,9 @@
 import UIKit
 import GoogleSignIn
 import FirebaseAuth
-class LogInViewController: UIViewController, GIDSignInUIDelegate {
+class LogInViewController: UIViewController, GIDSignInUIDelegate, UITextFieldDelegate {
     @IBOutlet weak var anonymousButton: UIButton!
+    @IBOutlet weak var nameTextField: UITextField!
 //    var stateDidChangeListener: FIRAuthStateDidChangeListenerHandle?
 //    var isGoingToChat: Bool = true
     override func viewDidLoad() {
@@ -23,10 +24,24 @@ class LogInViewController: UIViewController, GIDSignInUIDelegate {
         GIDSignIn.sharedInstance().clientID = "317794623259-l3v62v6a96082krgi73c9uuom72lgn11.apps.googleusercontent.com";
         GIDSignIn.sharedInstance().uiDelegate = self
         GIDSignIn.sharedInstance().delegate = self
+        
+        nameTextField.delegate = self
+        view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(LogInViewController.hideKeybroad)))
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+     func hideKeybroad() {
+        nameTextField.resignFirstResponder()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        if let name = Helper.helper.getUserName() {
+            nameTextField.text = name
+        }
         if FIRAuth.auth()?.currentUser != nil {
             Helper.helper.switchToNavigationVC()
         }
@@ -45,7 +60,17 @@ class LogInViewController: UIViewController, GIDSignInUIDelegate {
     
     @IBAction func loginAnonymouslyDidTapped(_ sender: UIButton) {
         print("login anonymously did tapped")
-        Helper.helper.loginAnonymously()
+        nameTextField.resignFirstResponder()
+        if let name = nameTextField.text {
+            let newLineAndWhiteSpaces = CharacterSet.whitespacesAndNewlines
+            let trimmedName = name.trimmingCharacters(in: newLineAndWhiteSpaces)
+            if trimmedName != "" {
+                print("user name is \(trimmedName)")
+                Helper.helper.setUserName(name: trimmedName)
+                Helper.helper.loginAnonymously()
+            }
+        }
+        
     }
 
     @IBAction func googleLoginDidTapped(_ sender: Any) {

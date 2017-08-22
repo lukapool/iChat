@@ -19,11 +19,12 @@ class Helper {
             if error == nil {
                 print("UserID: \(anonymouseUser!.uid)")
                 
-                if let anonymouseUser = anonymouseUser {
+                if let anonymouseUser = anonymouseUser,
+                    let displayName = self.getUserName() {
                     let newUserRef = FIRDatabase.database().reference().child("users").child(anonymouseUser.uid)
                     newUserRef.setValue(
                         [
-                            "displayName" : "anonymous",
+                            "displayName" : displayName,
                             "uid" : anonymouseUser.uid,
                             "profileUrl" : ""
                         ]
@@ -36,6 +37,19 @@ class Helper {
             }
         })
     }
+    
+    func getUserName() -> String? {
+        if let name = UserDefaults.standard.string(forKey: "name") {
+            return name
+        }
+        return nil
+    }
+    
+    func setUserName(name: String) {
+        UserDefaults.standard.set(name, forKey: "name")
+        UserDefaults.standard.synchronize()
+    }
+    
     
     func loginWithGoogle(authentication: GIDAuthentication) {
         // 使用 google 返回的 access token 去 google 资源服务器中获取用户名和注册成为 Firebase 的帐号

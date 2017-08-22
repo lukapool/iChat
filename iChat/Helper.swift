@@ -14,7 +14,7 @@ import FirebaseDatabase
 class Helper {
     static let helper = Helper()
     
-    func loginAnonymously() {
+    func loginAnonymously(displayName: String) {
         FIRAuth.auth()?.signInAnonymously(completion: { (anonymouseUser: FIRUser?, error: Error?) in
             if error == nil {
                 print("UserID: \(anonymouseUser!.uid)")

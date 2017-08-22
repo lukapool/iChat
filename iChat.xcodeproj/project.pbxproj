@@ -26,6 +26,7 @@
 		A1986CE31F4B30A7008BA99D /* ChannelListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1986CE21F4B30A7008BA99D /* ChannelListViewController.swift */; };
 		A1986CE51F4B3315008BA99D /* Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1986CE41F4B3315008BA99D /* Channel.swift */; };
 		A1986CE71F4B3E09008BA99D /* CreateChannelCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1986CE61F4B3E09008BA99D /* CreateChannelCell.swift */; };
+		A1986CF11F4C695C008BA99D /* StringTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1986CF01F4C695C008BA99D /* StringTool.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -51,6 +52,8 @@
 		A1986CE21F4B30A7008BA99D /* ChannelListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelListViewController.swift; sourceTree = "<group>"; };
 		A1986CE41F4B3315008BA99D /* Channel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Channel.swift; sourceTree = "<group>"; };
 		A1986CE61F4B3E09008BA99D /* CreateChannelCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateChannelCell.swift; sourceTree = "<group>"; };
+		A1986CEF1F4C5D0B008BA99D /* iChat.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = iChat.entitlements; sourceTree = "<group>"; };
+		A1986CF01F4C695C008BA99D /* StringTool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringTool.swift; sourceTree = "<group>"; };
 		D67D4C885E30D1502F66BAE0 /* Pods_iChat.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iChat.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -96,14 +99,13 @@
 		A11DF1451F4476ED00336382 /* iChat */ = {
 			isa = PBXGroup;
 			children = (
+				A1986CEF1F4C5D0B008BA99D /* iChat.entitlements */,
+				A1986CEE1F4C5A22008BA99D /* Supporting Files */,
 				A1986CED1F4C5927008BA99D /* Other */,
 				A1986CEC1F4C58D2008BA99D /* Model */,
 				A1986CEB1F4C58B3008BA99D /* View */,
 				A1986CEA1F4C5898008BA99D /* Controller */,
 				A11DF14D1F4476ED00336382 /* Assets.xcassets */,
-				A11DF14F1F4476ED00336382 /* LaunchScreen.storyboard */,
-				A11DF1521F4476ED00336382 /* Info.plist */,
-				A11DF16B1F44912800336382 /* GoogleService-Info.plist */,
 			);
 			path = iChat;
 			sourceTree = "<group>";
@@ -130,6 +132,7 @@
 				A11DF1581F447A6500336382 /* LogInViewController.swift */,
 				A1986CE21F4B30A7008BA99D /* ChannelListViewController.swift */,
 				A11DF15A1F447A7700336382 /* ChatViewController.swift */,
+				A1986CF01F4C695C008BA99D /* StringTool.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -137,6 +140,7 @@
 		A1986CEB1F4C58B3008BA99D /* View */ = {
 			isa = PBXGroup;
 			children = (
+				A11DF14F1F4476ED00336382 /* LaunchScreen.storyboard */,
 				A1986CE61F4B3E09008BA99D /* CreateChannelCell.swift */,
 				A11DF14A1F4476ED00336382 /* Main.storyboard */,
 			);
@@ -157,6 +161,15 @@
 				A11DF1461F4476ED00336382 /* AppDelegate.swift */,
 			);
 			name = Other;
+			sourceTree = "<group>";
+		};
+		A1986CEE1F4C5A22008BA99D /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				A11DF16B1F44912800336382 /* GoogleService-Info.plist */,
+				A11DF1521F4476ED00336382 /* Info.plist */,
+			);
+			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		BFF3891769E268AA11777888 /* Pods */ = {
@@ -205,6 +218,11 @@
 						CreatedOnToolsVersion = 8.3;
 						DevelopmentTeam = F9QPXX27PM;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.Keychain = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -300,6 +318,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A1986CF11F4C695C008BA99D /* StringTool.swift in Sources */,
 				A11DF1591F447A6500336382 /* LogInViewController.swift in Sources */,
 				A1986CE51F4B3315008BA99D /* Channel.swift in Sources */,
 				A11DF15B1F447A7700336382 /* ChatViewController.swift in Sources */,
@@ -432,6 +451,7 @@
 			baseConfigurationReference = 5CAEFC04087F2FD09CB57F82 /* Pods-iChat.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = iChat/iChat.entitlements;
 				DEVELOPMENT_TEAM = F9QPXX27PM;
 				INFOPLIST_FILE = iChat/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -446,6 +466,7 @@
 			baseConfigurationReference = 3FBF685EBA9AD511E29A27F9 /* Pods-iChat.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = iChat/iChat.entitlements;
 				DEVELOPMENT_TEAM = F9QPXX27PM;
 				INFOPLIST_FILE = iChat/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

@@ -56,9 +56,9 @@ class ChannelListViewController: UITableViewController {
     }
 
     @IBAction func createNewChannel(_ sender: UIButton) {
+        hideKeybroad()
         if let channelName = newChannelTextFiled?.text {
-            let newLineAndWhiteSpaces = CharacterSet.whitespacesAndNewlines
-            let trimmedChannelName = channelName.trimmingCharacters(in: newLineAndWhiteSpaces)
+            let trimmedChannelName = channelName.trmmingHeadAndFootSpace()
             if trimmedChannelName != "" {
                 print("new channel name is \(trimmedChannelName)")
                 channelsRef.childByAutoId().setValue(["name": trimmedChannelName])
@@ -80,13 +80,18 @@ class ChannelListViewController: UITableViewController {
             return channels.count
         }
     }
-
+    
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        hideKeybroad()
+    }
+    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let reuseIdentifier = indexPath.section == 0 ? "CREATECHANNEL" : "SHOWCHANNELNAME"
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath)
         if indexPath.section == 0 {
             if let createChannelCell = cell as? CreateChannelCell {
                 newChannelTextFiled = createChannelCell.newChannelTextField
+                newChannelTextFiled?.delegate = self
             }
         } else {
             cell.textLabel?.text = channels[indexPath.row].name
@@ -109,6 +114,7 @@ class ChannelListViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        hideKeybroad()
         let channel = channels[indexPath.row]
         let chatVC = ChatViewController()
 //        let chatVC = ViewController()
@@ -162,6 +168,21 @@ class ChannelListViewController: UITableViewController {
             destination.channel = channel
         }
     }
-    
+}
 
+extension ChannelListViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        hideKeybroad()
+        return true
+    }
+    
+    func hideKeybroad() {
+        if let textField = newChannelTextFiled ,
+            textField.isFirstResponder == true {
+            textField.resignFirstResponder()
+        }
+        
+    }
+    
+    
 }

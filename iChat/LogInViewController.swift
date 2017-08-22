@@ -12,8 +12,8 @@ import FirebaseAuth
 class LogInViewController: UIViewController, GIDSignInUIDelegate, UITextFieldDelegate {
     @IBOutlet weak var anonymousButton: UIButton!
     @IBOutlet weak var nameTextField: UITextField!
-//    var stateDidChangeListener: FIRAuthStateDidChangeListenerHandle?
-//    var isGoingToChat: Bool = true
+    var stateDidChangeListener: FIRAuthStateDidChangeListenerHandle?
+    var isFirstCalled: Bool = true
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -30,9 +30,10 @@ class LogInViewController: UIViewController, GIDSignInUIDelegate, UITextFieldDel
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
+        hideKeybroad()
         return true
     }
+    
      func hideKeybroad() {
         nameTextField.resignFirstResponder()
     }
@@ -42,32 +43,35 @@ class LogInViewController: UIViewController, GIDSignInUIDelegate, UITextFieldDel
         if let name = Helper.helper.getUserName() {
             nameTextField.text = name
         }
-        if FIRAuth.auth()?.currentUser != nil {
-            Helper.helper.switchToNavigationVC()
+//        if FIRAuth.auth()?.currentUser != nil {
+//            Helper.helper.switchToNavigationVC()
+//        }
+       stateDidChangeListener =  FIRAuth.auth()?.addStateDidChangeListener({ [unowned self] (auth: FIRAuth, user: FIRUser?) in
+        if !self.isFirstCalled {
+            if let user = user {
+                print(user)
+                if let appDelegate = UIApplication.shared.delegate as? AppDelegate,
+                   appDelegate.window?.rootViewController as? LogInViewController != nil{
+                    Helper.helper.switchToNavigationVC()
+                }
+                //                    Helper.helper.switchToNavigationVC()
+            } else {
+                print("unknown")
+            }
+        } else {
+            self.isFirstCalled = false
         }
-//       stateDidChangeListener =  FIRAuth.auth()?.addStateDidChangeListener({ (auth: FIRAuth, user: FIRUser?) in
-//            if let user = user {
-//                print(user)
-//                if self.isGoingToChat {
-//                    self.isGoingToChat = false
-//                    Helper.helper.switchToNavigationVC()
-//                }
-//            } else {
-//                print("unknown")
-//            }
-//        })
+       })
     }
     
     @IBAction func loginAnonymouslyDidTapped(_ sender: UIButton) {
         print("login anonymously did tapped")
         nameTextField.resignFirstResponder()
         if let name = nameTextField.text {
-            let newLineAndWhiteSpaces = CharacterSet.whitespacesAndNewlines
-            let trimmedName = name.trimmingCharacters(in: newLineAndWhiteSpaces)
+            let trimmedName = name.trmmingHeadAndFootSpace()
             if trimmedName != "" {
                 print("user name is \(trimmedName)")
-                Helper.helper.setUserName(name: trimmedName)
-                Helper.helper.loginAnonymously()
+                Helper.helper.loginAnonymously(displayName: trimmedName)
             }
         }
         
@@ -81,9 +85,9 @@ class LogInViewController: UIViewController, GIDSignInUIDelegate, UITextFieldDel
     
     deinit {
         print("Login View Controller dealloc")
-//        if let stateDidChangeListener = stateDidChangeListener {
-//            FIRAuth.auth()?.removeStateDidChangeListener(stateDidChangeListener)
-//        }
+        if let stateDidChangeListener = stateDidChangeListener {
+            FIRAuth.auth()?.removeStateDidChangeListener(stateDidChangeListener)
+        }
     }
 }
 
@@ -96,7 +100,7 @@ extension LogInViewController: GIDSignInDelegate {
         }
         print(user.authentication)
         
-        // 成功的到 Google 第三方登录的 access token
+        // 成功得到 Google 第三方登录的 access token
         Helper.helper.loginWithGoogle(authentication: user.authentication)
     }
 }

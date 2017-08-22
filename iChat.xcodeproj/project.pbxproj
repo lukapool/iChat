@@ -26,7 +26,6 @@
 		A1986CE31F4B30A7008BA99D /* ChannelListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1986CE21F4B30A7008BA99D /* ChannelListViewController.swift */; };
 		A1986CE51F4B3315008BA99D /* Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1986CE41F4B3315008BA99D /* Channel.swift */; };
 		A1986CE71F4B3E09008BA99D /* CreateChannelCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1986CE61F4B3E09008BA99D /* CreateChannelCell.swift */; };
-		A1986CE91F4B5CCA008BA99D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1986CE81F4B5CCA008BA99D /* ViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,7 +51,6 @@
 		A1986CE21F4B30A7008BA99D /* ChannelListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelListViewController.swift; sourceTree = "<group>"; };
 		A1986CE41F4B3315008BA99D /* Channel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Channel.swift; sourceTree = "<group>"; };
 		A1986CE61F4B3E09008BA99D /* CreateChannelCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateChannelCell.swift; sourceTree = "<group>"; };
-		A1986CE81F4B5CCA008BA99D /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		D67D4C885E30D1502F66BAE0 /* Pods_iChat.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iChat.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -98,19 +96,14 @@
 		A11DF1451F4476ED00336382 /* iChat */ = {
 			isa = PBXGroup;
 			children = (
-				A11DF1461F4476ED00336382 /* AppDelegate.swift */,
-				A11DF14A1F4476ED00336382 /* Main.storyboard */,
+				A1986CED1F4C5927008BA99D /* Other */,
+				A1986CEC1F4C58D2008BA99D /* Model */,
+				A1986CEB1F4C58B3008BA99D /* View */,
+				A1986CEA1F4C5898008BA99D /* Controller */,
 				A11DF14D1F4476ED00336382 /* Assets.xcassets */,
 				A11DF14F1F4476ED00336382 /* LaunchScreen.storyboard */,
 				A11DF1521F4476ED00336382 /* Info.plist */,
-				A11DF1581F447A6500336382 /* LogInViewController.swift */,
-				A11DF15A1F447A7700336382 /* ChatViewController.swift */,
 				A11DF16B1F44912800336382 /* GoogleService-Info.plist */,
-				A147149B1F449D1A005F92AA /* Helper.swift */,
-				A1986CE21F4B30A7008BA99D /* ChannelListViewController.swift */,
-				A1986CE41F4B3315008BA99D /* Channel.swift */,
-				A1986CE61F4B3E09008BA99D /* CreateChannelCell.swift */,
-				A1986CE81F4B5CCA008BA99D /* ViewController.swift */,
 			);
 			path = iChat;
 			sourceTree = "<group>";
@@ -128,6 +121,42 @@
 			);
 			name = Resources;
 			path = iChat/Resources;
+			sourceTree = "<group>";
+		};
+		A1986CEA1F4C5898008BA99D /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				A147149B1F449D1A005F92AA /* Helper.swift */,
+				A11DF1581F447A6500336382 /* LogInViewController.swift */,
+				A1986CE21F4B30A7008BA99D /* ChannelListViewController.swift */,
+				A11DF15A1F447A7700336382 /* ChatViewController.swift */,
+			);
+			name = Controller;
+			sourceTree = "<group>";
+		};
+		A1986CEB1F4C58B3008BA99D /* View */ = {
+			isa = PBXGroup;
+			children = (
+				A1986CE61F4B3E09008BA99D /* CreateChannelCell.swift */,
+				A11DF14A1F4476ED00336382 /* Main.storyboard */,
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
+		A1986CEC1F4C58D2008BA99D /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				A1986CE41F4B3315008BA99D /* Channel.swift */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		A1986CED1F4C5927008BA99D /* Other */ = {
+			isa = PBXGroup;
+			children = (
+				A11DF1461F4476ED00336382 /* AppDelegate.swift */,
+			);
+			name = Other;
 			sourceTree = "<group>";
 		};
 		BFF3891769E268AA11777888 /* Pods */ = {
@@ -277,7 +306,6 @@
 				A11DF1471F4476ED00336382 /* AppDelegate.swift in Sources */,
 				A147149C1F449D1A005F92AA /* Helper.swift in Sources */,
 				A1986CE31F4B30A7008BA99D /* ChannelListViewController.swift in Sources */,
-				A1986CE91F4B5CCA008BA99D /* ViewController.swift in Sources */,
 				A1986CE71F4B3E09008BA99D /* CreateChannelCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -71,6 +71,7 @@ class LogInViewController: UIViewController, GIDSignInUIDelegate, UITextFieldDel
             let trimmedName = name.trmmingHeadAndFootSpace()
             if trimmedName != "" {
                 print("user name is \(trimmedName)")
+                Helper.helper.setUserName(name: trimmedName);
                 Helper.helper.loginAnonymously(displayName: trimmedName)
             }
         }
